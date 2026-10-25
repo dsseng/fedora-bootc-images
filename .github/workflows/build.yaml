@@ -1,0 +1,67 @@
+name: Build a ContainerDisk
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: free up space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/lib/jvm /usr/share/swift /opt/hostedtoolcache/CodeQL /usr/lib/firefox /usr/local/share/chromium /opt/microsoft
+          sudo apt-get clean
+          df -h
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: bootc
+        run: |
+          # doesn't need rootful, but running as root for sharing the images with the builder
+          sudo podman build -f Containerfile.os -t localhost/bootc-vm:latest .
+
+      - name: bootc-image-builder
+        run: |
+          mkdir -p output
+          sudo podman run --rm --privileged \
+            --security-opt label=type:unconfined_t \
+            -v /var/lib/containers/storage:/var/lib/containers/storage \
+            -v ${{ github.workspace }}/output:/output \
+            quay.io/centos-bootc/bootc-image-builder@sha256:fcf6e822d93d9f3edbb8a09db0226b7e211ec732e8ad0199b89f22b13b94ebf6 \
+            --type qcow2 \
+            --rootfs btrfs \
+            localhost/bootc-vm:latest
+          sudo chown $USER:$USER output/qcow2/disk.qcow2
+          chmod 0644 output/qcow2/disk.qcow2
+          ls -lh output/qcow2/disk.qcow2
+
+      - name: Push ContainerDisk
+        run: |
+          IMAGE_TAG=${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+          LATEST_TAG=${{ env.REGISTRY }}/${{ github.repository }}:latest
+
+          podman build -f Containerfile.disk -t $IMAGE_TAG .
+          podman push $IMAGE_TAG
+
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            podman tag $IMAGE_TAG $LATEST_TAG
+            podman push $LATEST_TAG
+          fi

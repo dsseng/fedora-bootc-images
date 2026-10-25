@@ -1,0 +1,2 @@
+FROM scratch
+COPY --chmod=0440 --chown=107:107 output/qcow2/disk.qcow2 /disk/disk.qcow2
