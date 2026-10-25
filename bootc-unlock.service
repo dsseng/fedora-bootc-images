@@ -1,0 +1,13 @@
+[Unit]
+Description=Unlock bootc sysroot transparently
+After=sysinit.target
+Before=cloud-init.service
+ConditionPathExists=/run/ostree-booted
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/bootc usroverlay
+
+[Install]
+WantedBy=multi-user.target

@@ -17,9 +17,7 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     earlyoom \
     && dnf clean all
 
-RUN mkdir -p /usr/lib/ostree/ && \
-    echo -e "[stage]\nread-write=true" > /usr/lib/ostree/prepare-root.conf
-
+COPY bootc-unlock.service /etc/systemd/system/bootc-unlock.service
 COPY 10-dns-resolved.conf /etc/NetworkManager/conf.d/10-dns-resolved.conf
 RUN ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
@@ -36,6 +34,7 @@ RUN systemctl enable \
     cloud-config.service \
     cloud-final.service \
     sshd.service \
-    fstrim.timer
+    fstrim.timer \
+    bootc-unlock.service
 
 RUN bootc container lint
