@@ -18,33 +18,12 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
 RUN mkdir -p /usr/lib/ostree/ && \
     echo -e "[stage]\nread-write=true" > /usr/lib/ostree/prepare-root.conf
 
-RUN cat <<'EOF' > /etc/NetworkManager/conf.d/10-dns-resolved.conf
-[main]
-dns=systemd-resolved
-rc-manager=symlink
-EOF
-
+COPY 10-dns-resolved.conf /etc/NetworkManager/conf.d/10-dns-resolved.conf
 RUN ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
-RUN cat <<'EOF' > /etc/cloud/cloud.cfg.d/99_nocloud_ch.cfg
-datasource_list: [ NoCloud ]
-network:
-  renderers: ['network-manager']
-EOF
-
-RUN mkdir -p /usr/lib/bootc/kargs.d && cat <<'EOF' > /usr/lib/bootc/kargs.d/10-cloud-hypervisor.toml
-kargs = [
-    "console=ttyS0,115200n8",
-    "rootflags=discard",
-    "net.ifnames=0",
-    "biosdevname=0",
-    "audit=0"
-]
-EOF
-
-RUN cat <<'EOF' > /etc/dracut.conf.d/10-virtio.conf
-add_drivers+=" virtio_pci virtio_blk virtio_net virtio_balloon virtiofs "
-EOF
+COPY 99_nocloud_ch.cfg /etc/cloud/cloud.cfg.d/99_nocloud_ch.cfg
+COPY 10-cloud-hypervisor.toml /usr/lib/bootc/kargs.d/10-cloud-hypervisor.toml
+COPY 10-virtio.conf /etc/dracut.conf.d/10-virtio.conf
 
 RUN systemctl enable \
     systemd-resolved.service \
