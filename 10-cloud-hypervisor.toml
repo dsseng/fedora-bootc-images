@@ -1,6 +1,6 @@
 kargs = [
     "console=ttyS0,115200n8",
-    "rootflags=discard",
+    "rootflags=compress=zstd:1,discard=async",
     "net.ifnames=0",
     "biosdevname=0",
     "audit=0"
