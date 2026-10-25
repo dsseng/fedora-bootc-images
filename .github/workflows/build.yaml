@@ -22,8 +22,9 @@ jobs:
 
       - name: free up space
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/lib/jvm /usr/share/swift /opt/hostedtoolcache/CodeQL /usr/lib/firefox /usr/local/share/chromium /opt/microsoft
-          sudo apt-get clean
+          # df -h
+          # sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/lib/jvm /usr/share/swift /opt/hostedtoolcache/CodeQL /usr/lib/firefox /usr/local/share/chromium /opt/microsoft
+          # sudo apt-get clean
           df -h
 
       - name: Log in to the Container registry
