@@ -13,6 +13,8 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     procps-ng \
     iproute \
     iputils \
+    zram-generator \
+    earlyoom \
     && dnf clean all
 
 RUN mkdir -p /usr/lib/ostree/ && \
@@ -24,6 +26,8 @@ RUN ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 COPY 99_nocloud_ch.cfg /etc/cloud/cloud.cfg.d/99_nocloud_ch.cfg
 COPY 10-cloud-hypervisor.toml /usr/lib/bootc/kargs.d/10-cloud-hypervisor.toml
 COPY 10-virtio.conf /etc/dracut.conf.d/10-virtio.conf
+
+COPY zram-generator.conf /etc/systemd/zram-generator.conf
 
 RUN systemctl enable \
     systemd-resolved.service \
