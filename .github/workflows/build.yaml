@@ -11,7 +11,7 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -39,7 +39,7 @@ jobs:
             --security-opt label=type:unconfined_t \
             -v /var/lib/containers/storage:/var/lib/containers/storage \
             -v ${{ github.workspace }}/output:/output \
-            quay.io/centos-bootc/bootc-image-builder@sha256:fcf6e822d93d9f3edbb8a09db0226b7e211ec732e8ad0199b89f22b13b94ebf6 \
+            quay.io/centos-bootc/bootc-image-builder@sha256:dab86ee6b46dcade411b37f4e70b07d93b6a06da0dbfec6fe89247a220e0d9f8 \
             --type qcow2 \
             --rootfs ext4 \
             localhost/bootc-vm:latest
