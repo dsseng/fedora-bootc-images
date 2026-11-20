@@ -1,4 +1,4 @@
-FROM quay.io/fedora/fedora-bootc:45@sha256:17eabee8f2f836d01315c30cf4e3e48cbb57c125469d72229ad9126d8a747d6b
+FROM quay.io/fedora/fedora-bootc:45
 
 RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     cloud-init \
