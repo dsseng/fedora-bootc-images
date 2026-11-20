@@ -14,7 +14,6 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     iproute \
     iputils \
     zram-generator \
-    earlyoom \
     && dnf clean all
 
 COPY bootc-unlock.service /etc/systemd/system/bootc-unlock.service
