@@ -16,13 +16,13 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     zram-generator \
     && dnf clean all
 
-COPY bootc-unlock.service /etc/systemd/system/bootc-unlock.service
 COPY 10-dns-resolved.conf /etc/NetworkManager/conf.d/10-dns-resolved.conf
 RUN ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
 COPY 99_nocloud_ch.cfg /etc/cloud/cloud.cfg.d/99_nocloud_ch.cfg
 COPY 10-cloud-hypervisor.toml /usr/lib/bootc/kargs.d/10-cloud-hypervisor.toml
 COPY 10-virtio.conf /etc/dracut.conf.d/10-virtio.conf
+COPY prepare-root.conf /usr/lib/ostree/prepare-root.conf
 
 COPY zram-generator.conf /etc/systemd/zram-generator.conf
 
@@ -32,8 +32,9 @@ RUN systemctl enable \
     cloud-init-local.service \
     cloud-config.service \
     cloud-final.service \
-    sshd.service \
-    fstrim.timer \
-    bootc-unlock.service
+    sshd.service
+
+RUN kver=$(cd /usr/lib/modules && echo *) && \
+    dracut -vf /usr/lib/modules/$kver/initramfs.img $kver
 
 RUN bootc container lint
