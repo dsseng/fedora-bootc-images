@@ -1,6 +1,8 @@
 kargs = [
     "console=ttyS0,115200n8",
+    "systemd.volatile=state",
     "net.ifnames=0",
     "biosdevname=0",
+    "enforcing=0",
     "audit=0"
 ]

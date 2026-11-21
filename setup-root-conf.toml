@@ -4,6 +4,10 @@ enabled = yes
 [root]
 transient = true
 
-[etc]
 # Just use root
+[etc]
+mount = "none"
+
+# systemd.volatile=state mounts a tmpfs here
+[var]
 mount = "none"
