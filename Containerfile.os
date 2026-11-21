@@ -15,7 +15,17 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     iproute \
     iputils \
     zram-generator \
+    && dnf rm -y linux-firmware-* *-firmware fwupd* irqbalance thermald tuned lvm2* btrfs-progs xfsprogs nvme-cli sssd* \
+    && dnf autoremove -y \
     && dnf clean all
+
+# Failing/useless on an RO systeml
+RUN systemctl mask \
+    bootloader-update.service \
+    systemd-boot-random-seed.service \
+    systemd-boot-update.service \
+    bootc-fetch-apply-updates.timer \
+    bootc-fetch-apply-updates.service
 
 COPY 10-dns-resolved.conf /etc/NetworkManager/conf.d/10-dns-resolved.conf
 RUN ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
