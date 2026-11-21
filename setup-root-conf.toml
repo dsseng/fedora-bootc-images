@@ -1,6 +1,3 @@
-[composefs]
-enabled = yes
-
 [root]
 transient = true
 
