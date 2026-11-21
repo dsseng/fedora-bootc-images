@@ -7,14 +7,19 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     NetworkManager \
     openssh-server \
     sudo \
-    curl \
-    git \
+    zram-generator \
+    curl wget \
     tar \
-    tmux \
-    procps-ng \
+    procps-ng htop \
     iproute \
     iputils \
-    zram-generator \
+    git git-lfs \
+    tmux \
+    nano helix ripgrep fd-find \
+    zsh zsh-autosuggestions zsh-syntax-highlighting \
+    fish fzf \
+    jq fastfetch \
+    glibc-langpack-en \
     && dnf rm -y linux-firmware-* *-firmware fwupd* irqbalance thermald tuned lvm2* btrfs-progs xfsprogs nvme-cli sssd* \
     && dnf autoremove -y \
     && dnf clean all
