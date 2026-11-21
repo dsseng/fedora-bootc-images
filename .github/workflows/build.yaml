@@ -59,7 +59,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y qemu-utils
           qemu-img convert -f raw -O qcow2 -c \
-            -o compression_type=zstd,cluster_size=2M \
+            -o compression_type=zlib,cluster_size=2M \
             output/disk.img output/qcow2/disk.qcow2
           qemu-img info output/qcow2/disk.qcow2
           chmod 0644 output/qcow2/disk.qcow2
