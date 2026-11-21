@@ -32,20 +32,36 @@ jobs:
           # doesn't need rootful, but running as root for sharing the images with the builder
           sudo podman build -f Containerfile.os -t localhost/bootc-vm:latest .
 
-      - name: bootc-image-builder
+      - name: bootc-install
         run: |
           mkdir -p output
+
           sudo podman run --rm --privileged \
             --security-opt label=type:unconfined_t \
-            -v /var/lib/containers/storage:/var/lib/containers/storage \
+            -v /var/lib/containers:/var/lib/containers \
+            --pid=host \
+            -v /dev:/dev \
             -v ${{ github.workspace }}/output:/output \
-            quay.io/centos-bootc/bootc-image-builder@sha256:dab86ee6b46dcade411b37f4e70b07d93b6a06da0dbfec6fe89247a220e0d9f8 \
-            --type qcow2 \
-            --rootfs ext4 \
-            localhost/bootc-vm:latest
-          sudo chown $USER:$USER output/qcow2/disk.qcow2
+            localhost/bootc-vm:latest \
+            bootc install to-disk \
+              --via-loopback \
+              --generic-image \
+              --composefs-backend \
+              --bootloader=systemd \
+              --filesystem=ext4 \
+              --wipe \
+              /output/disk.img
+          sudo chown $USER:$USER output/disk.img
+          ls -lh output/disk.img
+
+      - name: qcow2
+        run: |
+          qemu-img convert -f raw -O qcow2 -c \
+            -o compression_type=zstd,cluster_size=2M \
+            output/disk.img output/qcow2/disk.qcow2
+          qemu-img info output/qcow2/disk.qcow2
           chmod 0644 output/qcow2/disk.qcow2
-          ls -lh output/qcow2/disk.qcow2
+          ls -lh output/disk.img output/qcow2/disk.qcow2
 
       - name: Push ContainerDisk
         run: |
