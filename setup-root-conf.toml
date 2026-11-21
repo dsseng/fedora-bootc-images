@@ -1,0 +1,13 @@
+[composefs]
+enabled = yes
+
+[root]
+transient = true
+
+# Just use root
+[etc]
+mount = "none"
+
+# systemd.volatile=state mounts a tmpfs here
+[var]
+mount = "none"

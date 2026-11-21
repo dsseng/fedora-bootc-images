@@ -22,7 +22,7 @@ RUN ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 COPY 99_nocloud_ch.cfg /etc/cloud/cloud.cfg.d/99_nocloud_ch.cfg
 COPY 10-cloud-hypervisor.toml /usr/lib/bootc/kargs.d/10-cloud-hypervisor.toml
 COPY 10-virtio.conf /etc/dracut.conf.d/10-virtio.conf
-COPY prepare-root.conf /usr/lib/ostree/prepare-root.conf
+COPY setup-root-conf.toml /usr/lib/composefs/setup-root-conf.toml
 
 COPY zram-generator.conf /etc/systemd/zram-generator.conf
 
