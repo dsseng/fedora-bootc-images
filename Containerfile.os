@@ -5,6 +5,7 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     cloud-init \
     systemd-resolved \
     NetworkManager \
+    clatd \
     openssh-server \
     sudo \
     zram-generator \
@@ -20,6 +21,13 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     fish fzf \
     jq fastfetch \
     glibc-langpack-en \
+    eza du-dust \
+    dnf5-plugins \
+    kubectl kind \
+    moby-engine docker-buildx \
+    clang llvm \
+    golang gopls \
+    tshark \
     && dnf rm -y linux-firmware-* *-firmware fwupd* irqbalance thermald tuned btrfs-progs nvme-cli sssd* \
     && dnf autoremove -y \
     && dnf clean all
