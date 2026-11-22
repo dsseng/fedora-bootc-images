@@ -20,7 +20,7 @@ RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False \
     fish fzf \
     jq fastfetch \
     glibc-langpack-en \
-    && dnf rm -y linux-firmware-* *-firmware fwupd* irqbalance thermald tuned lvm2* btrfs-progs xfsprogs nvme-cli sssd* \
+    && dnf rm -y linux-firmware-* *-firmware fwupd* irqbalance thermald tuned btrfs-progs nvme-cli sssd* \
     && dnf autoremove -y \
     && dnf clean all
 
